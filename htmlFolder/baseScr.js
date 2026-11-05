@@ -1,12 +1,15 @@
+// Recupera o ID e o tipo de conta do usuário armazenados na sessão.
 const usuarioId = sessionStorage.getItem('usuarioId');
 const tipoConta = sessionStorage.getItem('tipoConta');
 
-// Só entra quem fez login
+// Verifica se existe um usuário autenticado na sessão.
 if (!usuarioId) {
+    // Redireciona para a página de login caso não exista uma sessão.
     window.location.href = 'login.html';
 }
 
-// Ajuste os destinos conforme suas páginas
+
+// Define os caminhos das páginas utilizadas na navegação do sistema.
 const PAGINAS = {
     principal: 'homeS.html',
     emprestimos: 'perfil.html',
@@ -19,6 +22,7 @@ const PAGINAS = {
 };
 
 
+// Define a estrutura da barra de navegação para usuários comuns.
 const NAVBAR_HTML_USER = `
 <nav class="navbar" style="background-color: #D9D9D9;">
     <div class="container-fluid">
@@ -56,6 +60,8 @@ const NAVBAR_HTML_USER = `
 </nav>
 `;
 
+
+// Define a estrutura da barra de navegação para funcionários.
 const NAVBAR_HTML_FUNC = `
 <nav class="navbar" style="background-color: #D9D9D9;">
     <div class="container-fluid">
@@ -95,6 +101,8 @@ const NAVBAR_HTML_FUNC = `
 </nav>
 `;
 
+
+// Define a estrutura da barra de navegação para administradores.
 const NAVBAR_HTML_ADM = `
 <nav class="navbar" style="background-color: #D9D9D9;">
     <div class="container-fluid">
@@ -135,6 +143,9 @@ const NAVBAR_HTML_ADM = `
     </div>
 </nav>
 `;
+
+
+// Verifica o tipo de conta e carrega a barra de navegação correspondente.
 if(tipoConta == 'adm') {
     document.getElementById('navbar').innerHTML = NAVBAR_HTML_ADM;
 }else if(tipoConta == 'funcionario'){
@@ -144,29 +155,52 @@ if(tipoConta == 'adm') {
 }
 
 
-// Botões de navegação do menu
+// Adiciona eventos aos botões de navegação do menu.
 document.querySelectorAll('#navbar [data-destino]').forEach(btn => {
     btn.addEventListener('click', () => {
+
+        // Redireciona para a página associada ao destino selecionado.
         window.location.href = PAGINAS[btn.dataset.destino];
     });
 });
 
-// Sair
+
+// Configura o botão responsável por encerrar a sessão do usuário.
 document.getElementById('btn-sair').addEventListener('click', () => {
+
+    // Limpa os dados armazenados na sessão do navegador.
     sessionStorage.clear();
+
+    // Redireciona o usuário para a página de login.
     window.location.href = PAGINAS.login;
 });
 
-// Pesquisa: leva para a página principal com ?busca=termo
+
+// Configura o campo de pesquisa da barra de navegação.
 const campoBusca = document.getElementById('campo-busca');
+
+// Recupera o termo de pesquisa presente na URL, caso exista.
 campoBusca.value = new URLSearchParams(window.location.search).get('busca') || '';
 
+
+// Adiciona um evento para capturar o envio do formulário de pesquisa.
 document.getElementById('form-busca').addEventListener('submit', (e) => {
+
+    // Impede o comportamento padrão de envio do formulário.
     e.preventDefault();
+
+    // Recupera o termo digitado e remove espaços desnecessários.
     const termo = campoBusca.value.trim();
+
+    // Redireciona para a página principal enviando o termo pela URL.
     window.location.href = `${PAGINAS.principal}?busca=${encodeURIComponent(termo)}`;
 });
 
-// Mantidas porque outros scripts e onclicks já chamam estas funções
+
+// Funções auxiliares utilizadas para redirecionar entre páginas.
+
+// Redireciona para a página de perfil.
 function perfil() { window.location.href = PAGINAS.perfil; }
+
+// Redireciona para a página de configurações.
 function config() { window.location.href = PAGINAS.config; }
