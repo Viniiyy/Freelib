@@ -271,152 +271,152 @@ E antes disso, confirme que o MySQL Server está em execução. Para encerrar: `
 
 # Detalhes do Programa
 
-**Models, Serializers, Settings e URLs do projeto Biblioteca: o que cada parte faz e como elas se conectam**[cite: 9]
+**Models, Serializers, Settings e URLs do projeto Biblioteca: o que cada parte faz e como elas se conectam**
 
 | Parte | Papel no projeto |
 | :--- | :--- |
-| **Models** | Definem as tabelas do banco de dados (usuários, categorias, livros e empréstimos).[cite: 9] |
-| **Serializers** | Convertem os dados entre o banco e o formato JSON da API, e validam o que chega.[cite: 9] |
-| **Settings** | Reúnem as configurações gerais: apps, banco, segurança, idioma, mídia e CORS.[cite: 9] |
-| **URLs** | Ligam cada endereço da API (como `/Livros/`) ao código que responde a ele.[cite: 9] |
+| **Models** | Definem as tabelas do banco de dados (usuários, categorias, livros e empréstimos). |
+| **Serializers** | Convertem os dados entre o banco e o formato JSON da API, e validam o que chega. |
+| **Settings** | Reúnem as configurações gerais: apps, banco, segurança, idioma, mídia e CORS. |
+| **URLs** | Ligam cada endereço da API (como `/Livros/`) ao código que responde a ele. |
 
 ---
 
 ## Sumário
 
-1. [Visão geral: como as peças se conectam](#1-visão-geral-como-as-peças-se-conectam)[cite: 10]
-2. [Models (modelos do banco de dados)](#2-models-modelos-do-banco-de-dados)[cite: 10]
-3. [Serializers (conversão e validação dos dados)](#3-serializers-conversão-e-validação-dos-dados)[cite: 10]
-4. [Settings (configurações do projeto)](#4-settings-configurações-do-projeto)[cite: 10]
-5. [URLs (rotas da aplicação)](#5-urls-rotas-da-aplicação)[cite: 10]
-6. [Exemplo completo: o cadastro de um usuário](#6-exemplo-completo-o-cadastro-de-um-usuário)[cite: 10]
-7. [Pontos de atenção e melhorias sugeridas](#7-pontos-de-atenção-e-melhorias-sugeridas)[cite: 10]
+1. [Visão geral: como as peças se conectam](#1-visão-geral-como-as-peças-se-conectam)
+2. [Models (modelos do banco de dados)](#2-models-modelos-do-banco-de-dados)
+3. [Serializers (conversão e validação dos dados)](#3-serializers-conversão-e-validação-dos-dados)
+4. [Settings (configurações do projeto)](#4-settings-configurações-do-projeto)
+5. [URLs (rotas da aplicação)](#5-urls-rotas-da-aplicação)
+6. [Exemplo completo: o cadastro de um usuário](#6-exemplo-completo-o-cadastro-de-um-usuário)
+7. [Pontos de atenção e melhorias sugeridas](#7-pontos-de-atenção-e-melhorias-sugeridas)
 
-> **Dica:** Este guia explica apenas os arquivos de `models`, `serializers`, `settings` e `urls`.[cite: 10] Os ViewSets (`bookstore.api.viewsets`) e as views não fizeram parte do material, então aparecem só como "a peça que recebe a requisição".[cite: 10]
+> **Dica:** Este guia explica apenas os arquivos de `models`, `serializers`, `settings` e `urls`. Os ViewSets (`bookstore.api.viewsets`) e as views não fizeram parte do material, então aparecem só como "a peça que recebe a requisição".
 
 ---
 
 ## 1. Visão geral: como as peças se conectam
 
-Quando o front-end (ou o Swagger) faz uma requisição para a API, ela atravessa quatro camadas, nesta ordem:[cite: 11]
+Quando o front-end (ou o Swagger) faz uma requisição para a API, ela atravessa quatro camadas, nesta ordem:
 
 | Camada | Onde fica | O que faz |
 | :--- | :--- | :--- |
-| **1. URLs** | `urls.py` do projeto (`setup`)[cite: 11] | Recebe o endereço (ex.: `/Livros/`) e escolhe qual ViewSet responde.[cite: 11] |
-| **2. ViewSet** | `bookstore.api.viewsets`[cite: 11] | Trata a requisição (listar, criar, editar, apagar).[cite: 11] |
-| **3. Serializer** | Arquivo de serializers do app[cite: 11] | Valida os dados recebidos e converte models em JSON (e vice-versa).[cite: 11] |
-| **4. Model** | `models.py` do app `bookstore`[cite: 11] | Representa a tabela e grava ou lê no MySQL.[cite: 11] |
+| **1. URLs** | `urls.py` do projeto (`setup`) | Recebe o endereço (ex.: `/Livros/`) e escolhe qual ViewSet responde. |
+| **2. ViewSet** | `bookstore.api.viewsets` | Trata a requisição (listar, criar, editar, apagar). |
+| **3. Serializer** | Arquivo de serializers do app | Valida os dados recebidos e converte models em JSON (e vice-versa). |
+| **4. Model** | `models.py` do app `bookstore` | Representa a tabela e grava ou lê no MySQL. |
 
-O `settings.py` não faz parte desse caminho, mas comanda tudo: diz quais apps existem, como conectar no banco, onde ficam as imagens e quais tipos de conta existem.[cite: 11]
+O `settings.py` não faz parte desse caminho, mas comanda tudo: diz quais apps existem, como conectar no banco, onde ficam as imagens e quais tipos de conta existem.
 
-O projeto tem dois níveis, como é padrão no Django:[cite: 11]
+O projeto tem dois níveis, como é padrão no Django:
 
-* **`setup`:** o projeto em si, com as configurações (`settings`) e as rotas principais (`urls`).[cite: 11]
-* **`bookstore`:** o app da biblioteca, com os models, a API e os arquivos estáticos.[cite: 11]
+* **`setup`:** o projeto em si, com as configurações (`settings`) e as rotas principais (`urls`).
+* **`bookstore`:** o app da biblioteca, com os models, a API e os arquivos estáticos.
 
 ---
 
 ## 2. Models (modelos do banco de dados)
 
-Cada model é uma classe Python que o Django transforma em uma tabela do MySQL.[cite: 12] Cada atributo vira uma coluna.[cite: 12] Como o app se chama `bookstore`, as tabelas ficam com nomes como `bookstore_usuario`, `bookstore_livro`, `bookstore_categoria` e `bookstore_emprestimo`.[cite: 12] O campo `id` não aparece no código porque o Django o cria sozinho (tipo `BigAutoField`, definido em `DEFAULT_AUTO_FIELD`).[cite: 12]
+Cada model é uma classe Python que o Django transforma em uma tabela do MySQL. Cada atributo vira uma coluna. Como o app se chama `bookstore`, as tabelas ficam com nomes como `bookstore_usuario`, `bookstore_livro`, `bookstore_categoria` e `bookstore_emprestimo`. O campo `id` não aparece no código porque o Django o cria sozinho (tipo `BigAutoField`, definido em `DEFAULT_AUTO_FIELD`).
 
-> **Dica:** Sempre que você alterar um model, rode `python manage.py makemigrations` e depois `python manage.py migrate` para o banco acompanhar a mudança.[cite: 12]
+> **Dica:** Sempre que você alterar um model, rode `python manage.py makemigrations` e depois `python manage.py migrate` para o banco acompanhar a mudança.
 
 ### 2.1. RenameImage: nome único para as imagens
 
-Não é uma tabela, e sim uma classe auxiliar usada no parâmetro `upload_to` dos campos de imagem.[cite: 12] Ela recebe a pasta de destino, pega a extensão do arquivo enviado e gera um nome novo com `uuid.uuid4()`.[cite: 12] Assim duas fotos com o mesmo nome original nunca se sobrescrevem, e o nome original do arquivo não fica exposto.[cite: 12]
+Não é uma tabela, e sim uma classe auxiliar usada no parâmetro `upload_to` dos campos de imagem. Ela recebe a pasta de destino, pega a extensão do arquivo enviado e gera um nome novo com `uuid.uuid4()`. Assim duas fotos com o mesmo nome original nunca se sobrescrevem, e o nome original do arquivo não fica exposto.
 
 ```text
 # Exemplo do resultado
 foto enviada: minha foto.jpg
 salva como: ftPerfil/3f2b8c1e-9a7d.jpg (dentro de MEDIA_ROOT)
 ```
-*(Exemplo do resultado de renomeação automática de imagens[cite: 12].)*
+*(Exemplo do resultado de renomeação automática de imagens.)*
 
-O decorador `@deconstructible` é necessário para o Django conseguir registrar esse objeto nas migrações.[cite: 12]
+O decorador `@deconstructible` é necessário para o Django conseguir registrar esse objeto nas migrações.
 
 ### 2.2. Usuario
 
 | Campo | Tipo | Detalhes |
 | :--- | :--- | :--- |
-| **`fotoPerfil`** | `ImageField`[cite: 12] | Salva em `ftPerfil/` com nome UUID.[cite: 12] Como não tem `blank=True`, é obrigatório.[cite: 12] |
-| **`nome`** | `CharField(100)`[cite: 12] | Nome completo.[cite: 12] |
-| **`email`** | `EmailField`, `unique`[cite: 12] | Único: o banco rejeita dois cadastros com o mesmo e-mail.[cite: 12] |
-| **`senha`** | `CharField(128)`[cite: 12] | Guarda o hash da senha (não o texto puro).[cite: 12] 128 caracteres comportam o hash gerado pelo Django.[cite: 12] |
-| **`cpf`** | `CharField(11)`[cite: 12] | Texto, e não número, para preservar zeros à esquerda.[cite: 12] Não há validação de formato.[cite: 12] |
-| **`tipo_conta`** | `CharField(20)`, `choices`[cite: 12] | `usuario`, `funcionario` ou `adm`.[cite: 12] Padrão: `usuario`.[cite: 12] Com `editable=False`, não pode ser alterado por formulários.[cite: 12] |
+| **`fotoPerfil`** | `ImageField` | Salva em `ftPerfil/` com nome UUID. Como não tem `blank=True`, é obrigatório. |
+| **`nome`** | `CharField(100)` | Nome completo. |
+| **`email`** | `EmailField`, `unique` | Único: o banco rejeita dois cadastros com o mesmo e-mail. |
+| **`senha`** | `CharField(128)` | Guarda o hash da senha (não o texto puro). 128 caracteres comportam o hash gerado pelo Django. |
+| **`cpf`** | `CharField(11)` | Texto, e não número, para preservar zeros à esquerda. Não há validação de formato. |
+| **`tipo_conta`** | `CharField(20)`, `choices` | `usuario`, `funcionario` ou `adm`. Padrão: `usuario`. Com `editable=False`, não pode ser alterado por formulários. |
 
 #### Tipos de conta (`TipoConta`)
 
 | Valor salvo | Rótulo | Como é definido / o que o model oferece |
 | :--- | :--- | :--- |
-| **`usuario`** | Usuário[cite: 13] | Tipo padrão (e-mail sem sufixo especial).[cite: 13] É o único com `pode_emprestar = True`.[cite: 13] |
-| **`funcionario`** | Funcionário[cite: 13] | E-mails terminados em `@biblioteca.com`.[cite: 13] Propriedade `is_funcionario`.[cite: 13] |
-| **`adm`** | Administrador[cite: 13] | E-mails terminados em `.gov` ou `.gov.br`.[cite: 13] Propriedade `is_adm`.[cite: 13] |
+| **`usuario`** | Usuário | Tipo padrão (e-mail sem sufixo especial). É o único com `pode_emprestar = True`. |
+| **`funcionario`** | Funcionário | E-mails terminados em `@biblioteca.com`. Propriedade `is_funcionario`. |
+| **`adm`** | Administrador | E-mails terminados em `.gov` ou `.gov.br`. Propriedade `is_adm`. |
 
 #### Como o tipo de conta é definido
 
-O método estático `tipo_por_email(email)` limpa o e-mail (`strip` e `lower`), percorre o dicionário `TIPO_CONTA_POR_EMAIL` do `settings.py` e verifica se o e-mail termina com algum dos sufixos de cada tipo.[cite: 13] O primeiro tipo que combinar vence; se nenhum combinar, o resultado é `usuario`.[cite: 13]
+O método estático `tipo_por_email(email)` limpa o e-mail (`strip` e `lower`), percorre o dicionário `TIPO_CONTA_POR_EMAIL` do `settings.py` e verifica se o e-mail termina com algum dos sufixos de cada tipo. O primeiro tipo que combinar vence; se nenhum combinar, o resultado é `usuario`.
 
 ```python
 def save(self, *args, **kwargs):
     self.tipo_conta = self.tipo_por_email(self.email)
     super().save(*args, **kwargs)
 ```
-*(Sobrescrita do método `save()` no model `Usuario`[cite: 13].)*
+*(Sobrescrita do método `save()` no model `Usuario`.)*
 
-O `save()` foi sobrescrito para recalcular o tipo a cada gravação.[cite: 13] Por isso o tipo nunca vem do cliente: depende só do e-mail.[cite: 13]
+O `save()` foi sobrescrito para recalcular o tipo a cada gravação. Por isso o tipo nunca vem do cliente: depende só do e-mail.
 
 | E-mail | Sufixo que combina | Tipo resultante |
 | :--- | :--- | :--- |
-| `ana@prefeitura.gov.br`[cite: 13] | `.gov.br`[cite: 13] | `adm`[cite: 13] |
-| `joao@biblioteca.com`[cite: 13] | `@biblioteca.com`[cite: 13] | `funcionario`[cite: 13] |
-| `maria@gmail.com`[cite: 13] | *(nenhum)*[cite: 13] | `usuario`[cite: 13] |
+| `ana@prefeitura.gov.br` | `.gov.br` | `adm` |
+| `joao@biblioteca.com` | `@biblioteca.com` | `funcionario` |
+| `maria@gmail.com` | *(nenhum)* | `usuario`  |
 
 #### Propriedades auxiliares
 
-`is_adm`, `is_funcionario` e `pode_emprestar` são atalhos que retornam `True` ou `False` conforme o tipo.[cite: 13] Por serem propriedades Python, não são colunas do banco e não podem ser usadas em filtros como `Usuario.objects.filter(is_adm=True)`; nesse caso filtre por `tipo_conta='adm'`.[cite: 13]
+`is_adm`, `is_funcionario` e `pode_emprestar` são atalhos que retornam `True` ou `False` conforme o tipo. Por serem propriedades Python, não são colunas do banco e não podem ser usadas em filtros como `Usuario.objects.filter(is_adm=True)`; nesse caso filtre por `tipo_conta='adm'`.
 
-> **Atenção:** se você mudar o `TIPO_CONTA_POR_EMAIL` no `settings.py`, usuários já cadastrados só terão o tipo atualizado na próxima vez que forem salvos.[cite: 13]
+> **Atenção:** se você mudar o `TIPO_CONTA_POR_EMAIL` no `settings.py`, usuários já cadastrados só terão o tipo atualizado na próxima vez que forem salvos.
 
 ### 2.3. Categoria
 
-Tabela simples com um único campo, `categoria` (texto de até 100 caracteres), além do `id` automático.[cite: 13] Serve para organizar os livros.[cite: 13]
+Tabela simples com um único campo, `categoria` (texto de até 100 caracteres), além do `id` automático. Serve para organizar os livros.
 
 ### 2.4. Livro
 
 | Campo | Tipo | Detalhes |
 | :--- | :--- | :--- |
-| **`imagem`** | `ImageField`[cite: 14] | Capa do livro, salva em `images/` com nome UUID.[cite: 14] |
-| **`titulo`** | `CharField(50)`[cite: 14] | Título.[cite: 14] |
-| **`descricao`** | `TextField`[cite: 14] | Texto longo, sem limite de tamanho.[cite: 14] |
-| **`dataEntrada`** | `DateField`[cite: 14] | Data em que o livro entrou na biblioteca.[cite: 14] |
-| **`categoria`** | `ForeignKey(Categoria)`[cite: 14] | Liga o livro a uma categoria.[cite: 14] |
-| **`situacao`** | `CharField(15)`[cite: 14] | Situação atual (texto livre, como `"disponível"`).[cite: 14] |
+| **`imagem`** | `ImageField` | Capa do livro, salva em `images/` com nome UUID. |
+| **`titulo`** | `CharField(50)` | Título. |
+| **`descricao`** | `TextField` | Texto longo, sem limite de tamanho. |
+| **`dataEntrada`** | `DateField` | Data em que o livro entrou na biblioteca. |
+| **`categoria`** | `ForeignKey(Categoria)` | Liga o livro a uma categoria. |
+| **`situacao`** | `CharField(15)` | Situação atual (texto livre, como `"disponível"`). |
 
 ### 2.5. Emprestimo
 
-Liga um usuário a um livro em um período.[cite: 14] Tem as chaves estrangeiras `livro` e `usuario`, mais as datas `data_emprestimo` e `data_devolucao` (prevista).[cite: 14]
+Liga um usuário a um livro em um período. Tem as chaves estrangeiras `livro` e `usuario`, mais as datas `data_emprestimo` e `data_devolucao` (prevista).
 
 ### 2.6. Relacionamentos e o que acontece ao apagar
 
-O parâmetro `on_delete` define o que o Django faz quando o registro referenciado é apagado:[cite: 14]
+O parâmetro `on_delete` define o que o Django faz quando o registro referenciado é apagado:
 
 | Relação | `on_delete` | Efeito |
 | :--- | :--- | :--- |
-| **Livro > Categoria**[cite: 14] | `DO_NOTHING`[cite: 14] | O Django não faz nada.[cite: 14] Como o MySQL tem a restrição de chave estrangeira, apagar uma categoria que ainda tem livros gera erro de integridade.[cite: 14] |
-| **Emprestimo > Livro**[cite: 14] | `CASCADE`[cite: 14] | Apagar um livro apaga também seus empréstimos.[cite: 14] |
-| **Emprestimo > Usuario**[cite: 14] | `CASCADE`[cite: 14] | Apagar um usuário apaga também seus empréstimos.[cite: 14] |
+| **Livro > Categoria** | `DO_NOTHING` | O Django não faz nada. Como o MySQL tem a restrição de chave estrangeira, apagar uma categoria que ainda tem livros gera erro de integridade. |
+| **Emprestimo > Livro** | `CASCADE` | Apagar um livro apaga também seus empréstimos. |
+| **Emprestimo > Usuario** | `CASCADE` | Apagar um usuário apaga também seus empréstimos. |
 
-Em resumo: uma `Categoria` tem vários `Livros`; um `Livro` e um `Usuario` se relacionam por meio de vários `Emprestimos` (a tabela de empréstimos é a ponte entre eles).[cite: 14]
+Em resumo: uma `Categoria` tem vários `Livros`; um `Livro` e um `Usuario` se relacionam por meio de vários `Emprestimos` (a tabela de empréstimos é a ponte entre eles).
 
 ---
 
 ## 3. Serializers (conversão e validação dos dados)
 
-A API conversa em JSON, mas o banco guarda objetos Python (models).[cite: 15] O serializer faz a tradução nos dois sentidos e ainda valida os dados que chegam antes de gravar.[cite: 15] O projeto usa `ModelSerializer`, que monta os campos automaticamente a partir do model.[cite: 15]
+A API conversa em JSON, mas o banco guarda objetos Python (models). O serializer faz a tradução nos dois sentidos e ainda valida os dados que chegam antes de gravar. O projeto usa `ModelSerializer`, que monta os campos automaticamente a partir do model.
 
-Em todos os serializers aparece a mesma estrutura:[cite: 15]
+Em todos os serializers aparece a mesma estrutura:
 
 ```python
 class LivroSerializer(serializers.ModelSerializer):
@@ -425,70 +425,70 @@ class LivroSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {...}
 ```
-*(Estrutura padrão dos serializers do projeto[cite: 15].)*
+*(Estrutura padrão dos serializers do projeto.)*
 
 | Elemento | Função |
 | :--- | :--- |
-| **`model`** | Diz de qual model os campos serão gerados.[cite: 15] |
-| **`fields = '__all__'`** | Expõe todos os campos do model na API.[cite: 15] |
-| **`extra_kwargs`** | Ajusta opções por campo.[cite: 15] Aqui é usado para o `help_text`, a descrição que aparece na documentação Swagger e Redoc.[cite: 15] |
+| **`model`** | Diz de qual model os campos serão gerados. |
+| **`fields = '__all__'`** | Expõe todos os campos do model na API. |
+| **`extra_kwargs`** | Ajusta opções por campo. Aqui é usado para o `help_text`, a descrição que aparece na documentação Swagger e Redoc. |
 
 ### 3.1. Os quatro serializers principais
 
 | Serializer | Model | Particularidades |
 | :--- | :--- | :--- |
-| **`CategoriaSerializer`** | `Categoria`[cite: 15] | Apenas `help_text` para `id` e `categoria`.[cite: 15] |
-| **`LivroSerializer`** | `Livro`[cite: 15] | O `help_text` de `categoria` orienta a buscar o ID no `GET` da API de Categoria.[cite: 15] |
-| **`EmprestimoSerializer`** | `Emprestimo`[cite: 15] | O `help_text` de `livro` e `usuario` orienta de onde pegar os IDs.[cite: 15] |
-| **`UsuarioSerializer`** | `Usuario`[cite: 15] | Tem regras especiais de segurança (seção 3.2).[cite: 15] |
+| **`CategoriaSerializer`** | `Categoria` | Apenas `help_text` para `id` e `categoria`. |
+| **`LivroSerializer`** | `Livro` | O `help_text` de `categoria` orienta a buscar o ID no `GET` da API de Categoria. |
+| **`EmprestimoSerializer`** | `Emprestimo` | O `help_text` de `livro` e `usuario` orienta de onde pegar os IDs. |
+| **`UsuarioSerializer`** | `Usuario` | Tem regras especiais de segurança (seção 3.2). |
 
-Como as relações são chaves estrangeiras, na API elas são informadas pelo ID do registro relacionado.[cite: 15] Por isso os textos de ajuda mandam consultar o `GET` da outra API antes.[cite: 15]
+Como as relações são chaves estrangeiras, na API elas são informadas pelo ID do registro relacionado. Por isso os textos de ajuda mandam consultar o `GET` da outra API antes.
 
 ### 3.2. UsuarioSerializer: as regras de segurança
 
 | Configuração | Efeito |
 | :--- | :--- |
-| **`read_only_fields = ['tipo_conta']`** | O cliente não consegue enviar nem alterar o tipo de conta pela API.[cite: 15] Ele é calculado pelo e-mail no model.[cite: 15] |
-| **`'senha': {'write_only': True}`** | A senha pode ser enviada, mas nunca é devolvida nas respostas da API.[cite: 15] |
-| **`validate_senha(self, valor)`** | O DRF chama métodos `validate_<campo>` automaticamente.[cite: 15] Este troca a senha enviada pelo hash gerado por `make_password`, que é o que será gravado no banco.[cite: 15] |
+| **`read_only_fields = ['tipo_conta']`** | O cliente não consegue enviar nem alterar o tipo de conta pela API. Ele é calculado pelo e-mail no model. |
+| **`'senha': {'write_only': True}`** | A senha pode ser enviada, mas nunca é devolvida nas respostas da API. |
+| **`validate_senha(self, valor)`** | O DRF chama métodos `validate_<campo>` automaticamente. Este troca a senha enviada pelo hash gerado por `make_password`, que é o que será gravado no banco. |
 
 ```python
 def validate_senha(self, valor):
     return make_password(valor)
 ```
-*(Validação e encriptação da senha no `UsuarioSerializer`[cite: 16].)*
+*(Validação e encriptação da senha no `UsuarioSerializer`.)*
 
-**Resultado:** o banco nunca guarda a senha em texto puro.[cite: 16] Para conferir a senha no login, o código precisa usar `check_password` (do Django), que compara a senha digitada com o hash.[cite: 16]
+**Resultado:** o banco nunca guarda a senha em texto puro. Para conferir a senha no login, o código precisa usar `check_password` (do Django), que compara a senha digitada com o hash.
 
 ### 3.3. UsuarioEmprestimosSerializer
 
-Serializer pensado para mostrar os empréstimos de um usuário, com dois campos de texto declarados manualmente: `nome` e `LivroEmp`.[cite: 16] Ele não tem classe `Meta`, ou seja, não está ligado a nenhum model; os dados precisam ser montados pela view.[cite: 16] Veja a observação sobre ele na seção 7.[cite: 16]
+Serializer pensado para mostrar os empréstimos de um usuário, com dois campos de texto declarados manualmente: `nome` e `LivroEmp`. Ele não tem classe `Meta`, ou seja, não está ligado a nenhum model; os dados precisam ser montados pela view. Veja a observação sobre ele na seção 7.
 
 ---
 
 ## 4. Settings (configurações do projeto)
 
-O `settings.py` é lido pelo Django ao iniciar.[cite: 17] Cada bloco configura uma parte do sistema:[cite: 17]
+O `settings.py` é lido pelo Django ao iniciar. Cada bloco configura uma parte do sistema:
 
 | Configuração | O que faz |
 | :--- | :--- |
-| **`BASE_DIR`** | Pasta raiz do projeto, calculada a partir do próprio arquivo.[cite: 17] Serve de base para outros caminhos.[cite: 17] |
-| **`SECRET_KEY`** | Chave usada em operações criptográficas (sessões, tokens).[cite: 17] Deve ser secreta.[cite: 17] *(Valor omitido neste guia.)*[cite: 17] |
-| **`DEBUG = True`** | Modo de desenvolvimento: mostra páginas de erro detalhadas e serve arquivos de mídia.[cite: 17] |
-| **`ALLOWED_HOSTS = []`** | Lista de domínios permitidos.[cite: 17] Vazia funciona em desenvolvimento local; em produção deve listar os domínios.[cite: 17] |
-| **`INSTALLED_APPS`** | Apps ativos: os do Django (`admin`, `auth`, `sessions`...), mais `rest_framework` (API), `drf_yasg` (Swagger/Redoc), `bookstore` (seu app) e `corsheaders` (CORS).[cite: 17] |
-| **`TIPO_CONTA_POR_EMAIL`** | Configuração própria do projeto: dicionário com os sufixos de e-mail de cada tipo de conta (seção 4.1).[cite: 17] |
-| **`MIDDLEWARE`** | Camadas que processam toda requisição: segurança, sessão, CSRF, autenticação, mensagens, clickjacking e CORS.[cite: 17] |
-| **`ROOT_URLCONF`** | Aponta o arquivo de rotas principal: `setup.urls`.[cite: 17] |
-| **`TEMPLATES`** | Configura os templates HTML do Django (usados, por exemplo, pelo painel admin).[cite: 17] |
-| **`WSGI_APPLICATION`** | Ponto de entrada para servidores web em produção.[cite: 17] |
-| **`DATABASES`** | Conexão com o MySQL (seção 4.2).[cite: 17] |
-| **`AUTH_PASSWORD_VALIDATORS`** | Regras de senha do sistema de usuários do Django (similaridade, tamanho mínimo, senhas comuns, só números).[cite: 17] |
-| **`LANGUAGE_CODE` / `TIME_ZONE`** | Idioma `pt-br` e fuso `America/Sao_Paulo`.[cite: 17] `USE_TZ = True` guarda datas com fuso horário.[cite: 17] |
-| **`STATIC_URL` / `STATICFILES_DIRS`** | Arquivos estáticos (como os scripts JS do front) servidos em `/static/`, buscados em `bookstore/static/scripts`.[cite: 17] |
-| **`DEFAULT_AUTO_FIELD`** | Tipo do `id` criado automaticamente nos models (`BigAutoField`).[cite: 17] |
-| **`CORS_ALLOW_ALL_ORIGINS = True`** | Permite que páginas de qualquer origem chamem a API (necessário quando o front roda em endereço/porta diferentes).[cite: 17] |
-| **`MEDIA_URL` / `MEDIA_ROOT`** | Arquivos enviados pelos usuários (fotos e capas): acessados em `/media/` e gravados na pasta `media/` do projeto.[cite: 17] |
+| **`BASE_DIR`** | Pasta raiz do projeto, calculada a partir do próprio arquivo. Serve de base para outros caminhos. |
+| **`SECRET_KEY`** | Chave usada em operações criptográficas (sessões, tokens). Deve ser secreta. *(Valor omitido neste guia.)* |
+| **`DEBUG = True`** | Modo de desenvolvimento: mostra páginas de erro detalhadas e serve arquivos de mídia. |
+| **`ALLOWED_HOSTS = []`** | Lista de domínios permitidos. Vazia funciona em desenvolvimento local; em produção deve listar os domínios. |
+| **`INSTALLED_APPS`** | Apps ativos: os do Django (`admin`, `auth`, `sessions`...), mais `rest_framework` (API), `drf_yasg` (Swagger/Redoc), `bookstore` (seu app) e `corsheaders` (CORS). |
+| **`TIPO_CONTA_POR_EMAIL`** | Configuração própria do projeto: dicionário com os sufixos de e-mail de cada tipo de conta (seção 4.1). |
+| **`MIDDLEWARE`** | Camadas que processam toda requisição: segurança, sessão, CSRF, autenticação, mensagens, clickjacking e CORS. |
+| **`ROOT_URLCONF`** | Aponta o arquivo de rotas principal: `setup.urls`. |
+| **`TEMPLATES`** | Configura os templates HTML do Django (usados, por exemplo, pelo painel admin). |
+| **`WSGI_APPLICATION`** | Ponto de entrada para servidores web em produção. |
+| **`DATABASES`** | Conexão com o MySQL (seção 4.2). |
+| **`AUTH_PASSWORD_VALIDATORS`** | Regras de senha do sistema de usuários do Django (similaridade, tamanho mínimo, senhas comuns, só números). |
+| **`LANGUAGE_CODE` / `TIME_ZONE`** | Idioma `pt-br` e fuso `America/Sao_Paulo`. `USE_TZ = True` guarda datas com fuso horário. |
+| **`STATIC_URL` / `STATICFILES_DIRS`** | Arquivos estáticos (como os scripts JS do front) servidos em `/static/`, buscados em `bookstore/static/scripts`. |
+| **`DEFAULT_AUTO_FIELD`** | Tipo do `id` criado automaticamente nos models (`BigAutoField`). |
+| **`CORS_ALLOW_ALL_ORIGINS = True`** | Permite que páginas de qualquer origem chamem a API (necessário quando o front roda em endereço/porta diferentes). |
+| **`MEDIA_URL` / `MEDIA_ROOT`** | Arquivos enviados pelos usuários (fotos e capas): acessados em `/media/` e gravados na pasta `media/` do projeto. |
 
 ### 4.1. TIPO_CONTA_POR_EMAIL
 
@@ -498,30 +498,30 @@ TIPO_CONTA_POR_EMAIL = {
     "funcionario": ["@biblioteca.com"],
 }
 ```
-*(Dicionário de mapeamento de sufixos de e-mail em `settings.py`[cite: 18].)*
+*(Dicionário de mapeamento de sufixos de e-mail em `settings.py`.)*
 
-Cada chave é um tipo de conta e cada valor é uma lista de sufixos.[cite: 18] O model compara o final do e-mail com esses sufixos.[cite: 18] Note que `.gov.br` precisa estar na lista separadamente, pois um e-mail terminado em `.gov.br` não termina em `.gov`.[cite: 18] Para incluir um novo tipo de e-mail, basta adicionar um sufixo à lista correspondente, sem mexer no model.[cite: 18]
+Cada chave é um tipo de conta e cada valor é uma lista de sufixos. O model compara o final do e-mail com esses sufixos. Note que `.gov.br` precisa estar na lista separadamente, pois um e-mail terminado em `.gov.br` não termina em `.gov`. Para incluir um novo tipo de e-mail, basta adicionar um sufixo à lista correspondente, sem mexer no model.
 
 ### 4.2. DATABASES (MySQL)
 
 | Chave | Valor | Significado |
 | :--- | :--- | :--- |
-| **`ENGINE`** | `django.db.backends.mysql`[cite: 18] | Usa o MySQL (por meio do `mysqlclient`).[cite: 18] |
-| **`NAME`** | `bookstore`[cite: 18] | Nome do banco.[cite: 18] |
-| **`USER`** | `root`[cite: 18] | Usuário de conexão.[cite: 18] |
-| **`PASSWORD`** | *(omitida neste guia)*[cite: 18] | Senha do usuário no MySQL.[cite: 18] |
-| **`HOST`** | `localhost`[cite: 18] | Servidor do MySQL (a própria máquina).[cite: 18] |
-| **`PORT`** | `3306`[cite: 18] | Porta padrão do MySQL.[cite: 18] |
-| **`OPTIONS: charset`** | `utf8mb4`[cite: 18] | Aceita acentos, caracteres especiais e emojis.[cite: 18] |
+| **`ENGINE`** | `django.db.backends.mysql` | Usa o MySQL (por meio do `mysqlclient`). |
+| **`NAME`** | `bookstore` | Nome do banco. |
+| **`USER`** | `root` | Usuário de conexão. |
+| **`PASSWORD`** | *(omitida neste guia)* | Senha do usuário no MySQL. |
+| **`HOST`** | `localhost` | Servidor do MySQL (a própria máquina). |
+| **`PORT`** | `3306` | Porta padrão do MySQL. |
+| **`OPTIONS: charset`** | `utf8mb4` | Aceita acentos, caracteres especiais e emojis. |
 
 ### 4.3. Arquivos estáticos e de mídia: qual a diferença?
 
 | Aspecto | Estáticos | Mídia |
 | :--- | :--- | :--- |
-| **O que são** | Arquivos do próprio sistema (JS, CSS, imagens do layout).[cite: 18] | Arquivos enviados pelos usuários (fotos de perfil, capas de livros).[cite: 18] |
-| **URL** | `/static/`[cite: 18] | `/media/`[cite: 18] |
-| **Pasta** | `bookstore/static/scripts`[cite: 18] | `media/` (`MEDIA_ROOT`)[cite: 18] |
-| **Quem alimenta** | Você, ao programar.[cite: 18] | Os usuários, pela API (campos `ImageField`).[cite: 18] |
+| **O que são** | Arquivos do próprio sistema (JS, CSS, imagens do layout). | Arquivos enviados pelos usuários (fotos de perfil, capas de livros). |
+| **URL** | `/static/` | `/media/` |
+| **Pasta** | `bookstore/static/scripts` | `media/` (`MEDIA_ROOT`) |
+| **Quem alimenta** | Você, ao programar. | Os usuários, pela API (campos `ImageField`). |
 
 ---
 
@@ -568,63 +568,63 @@ O `DefaultRouter` também cria a página inicial da API em `/`, com a lista dos 
 
 | Endereço | O que abre |
 | :--- | :--- |
-| `/admin/`[cite: 20] | Painel administrativo do Django.[cite: 20] |
-| `/swagger/`[cite: 20] | Documentação interativa (Swagger): permite testar a API pelo navegador.[cite: 20] |
-| `/redoc/`[cite: 20] | Documentação em formato Redoc (leitura).[cite: 20] |
-| `/aswaggerjson/`[cite: 20] | Arquivo JSON do esquema da API.[cite: 20] |
-| `/Login/`[cite: 20] | Rota de login, tratada pela função `viewsets.login`.[cite: 20] |
-| `/media/...`[cite: 20] | Imagens enviadas (só funciona com `DEBUG = True`).[cite: 20] |
+| `/admin/` | Painel administrativo do Django. |
+| `/swagger/` | Documentação interativa (Swagger): permite testar a API pelo navegador. |
+| `/redoc/` | Documentação em formato Redoc (leitura). |
+| `/aswaggerjson/` | Arquivo JSON do esquema da API. |
+| `/Login/` | Rota de login, tratada pela função `viewsets.login`. |
+| `/media/...` | Imagens enviadas (só funciona com `DEBUG = True`). |
 
-As rotas de mídia usam `static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)` dentro de um `if settings.DEBUG`.[cite: 20] Isso é um recurso do servidor de desenvolvimento; em produção, o servidor web precisa servir a pasta `media` por conta própria.[cite: 20]
+As rotas de mídia usam `static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)` dentro de um `if settings.DEBUG`. Isso é um recurso do servidor de desenvolvimento; em produção, o servidor web precisa servir a pasta `media` por conta própria.
 
 ---
 
 ## 6. Exemplo completo: o cadastro de um usuário
 
-Veja como as quatro partes trabalham juntas quando o front envia um cadastro (supondo que o `UsuarioViewSet` use o `UsuarioSerializer`):[cite: 21]
+Veja como as quatro partes trabalham juntas quando o front envia um cadastro (supondo que o `UsuarioViewSet` use o `UsuarioSerializer`):
 
-1. O front faz um `POST` para `http://127.0.0.1:8000/Usuarios/` com nome, e-mail, senha, cpf e a foto (como formulário com arquivo, por causa da imagem).[cite: 21]
-2. O CORS (`settings`) permite que a requisição venha de outra origem.[cite: 21]
-3. O `urls.py` encontra o prefixo `Usuarios` e entrega a requisição ao `UsuarioViewSet`.[cite: 21]
-4. O `UsuarioSerializer` valida os campos (e-mail único, tamanhos máximos, foto obrigatória) e ignora qualquer `tipo_conta` enviado, pois é somente leitura.[cite: 21]
-5. O `validate_senha` troca a senha pelo hash.[cite: 21]
-6. Ao gravar, o `Usuario.save()` consulta o `TIPO_CONTA_POR_EMAIL` e define o tipo de conta pelo e-mail.[cite: 21]
-7. O `RenameImage` dá um nome UUID à foto, que vai para a pasta `media/ftPerfil/` (`MEDIA_ROOT`).[cite: 21]
-8. O registro é gravado no MySQL (banco `bookstore`, tabela do app `bookstore`).[cite: 21]
-9. A resposta volta em JSON, sem a senha (`write_only`), já com o `tipo_conta` calculado.[cite: 21]
+1. O front faz um `POST` para `http://127.0.0.1:8000/Usuarios/` com nome, e-mail, senha, cpf e a foto (como formulário com arquivo, por causa da imagem).
+2. O CORS (`settings`) permite que a requisição venha de outra origem.
+3. O `urls.py` encontra o prefixo `Usuarios` e entrega a requisição ao `UsuarioViewSet`.
+4. O `UsuarioSerializer` valida os campos (e-mail único, tamanhos máximos, foto obrigatória) e ignora qualquer `tipo_conta` enviado, pois é somente leitura.
+5. O `validate_senha` troca a senha pelo hash.
+6. Ao gravar, o `Usuario.save()` consulta o `TIPO_CONTA_POR_EMAIL` e define o tipo de conta pelo e-mail.
+7. O `RenameImage` dá um nome UUID à foto, que vai para a pasta `media/ftPerfil/` (`MEDIA_ROOT`).
+8. O registro é gravado no MySQL (banco `bookstore`, tabela do app `bookstore`).
+9. A resposta volta em JSON, sem a senha (`write_only`), já com o `tipo_conta` calculado.
 
 ---
 
 ## 7. Pontos de atenção e melhorias sugeridas
 
-> Este projeto foi desenvolvido por um estudante universitário e, como parte de seu processo de desenvolvimento, pode apresentar erros, vulnerabilidades de segurança.[cite: 22]
+> Este projeto foi desenvolvido por um estudante universitário e, como parte de seu processo de desenvolvimento, pode apresentar erros, vulnerabilidades de segurança.
 >
-> Com o objetivo de identificar possíveis problemas, solicitei ao Claude AI versão Sonnet 5.5 uma análise do código, que apontou falhas, possíveis vulnerabilidades e sugestões de melhorias.[cite: 22]
+> Com o objetivo de identificar possíveis problemas, solicitei ao Claude AI versão Sonnet 5.5 uma análise do código, que apontou falhas, possíveis vulnerabilidades e sugestões de melhorias.
 >
-> Portanto, reforço que este projeto deve ser utilizado com cautela.[cite: 22] Antes de aplicá-lo em qualquer ambiente real, recomendo que todo o código seja devidamente revisado, testado e, se necessário, corrigido por profissionais qualificados.[cite: 22]
+> Portanto, reforço que este projeto deve ser utilizado com cautela. Antes de aplicá-lo em qualquer ambiente real, recomendo que todo o código seja devidamente revisado, testado e, se necessário, corrigido por profissionais qualificados.
 >
-> O projeto é disponibilizado como uma iniciativa de aprendizado e desenvolvimento, não como uma solução pronta para uso em ambientes que exijam garantias de segurança e confiabilidade.[cite: 22]
+> O projeto é disponibilizado como uma iniciativa de aprendizado e desenvolvimento, não como uma solução pronta para uso em ambientes que exijam garantias de segurança e confiabilidade.
 
-A lista abaixo não aponta erros de funcionamento: são cuidados e melhorias que valem a pena, em ordem aproximada de importância.[cite: 22] Vários são aceitáveis em desenvolvimento, mas importam quando o projeto for usado de verdade.[cite: 22]
+A lista abaixo não aponta erros de funcionamento: são cuidados e melhorias que valem a pena, em ordem aproximada de importância. Vários são aceitáveis em desenvolvimento, mas importam quando o projeto for usado de verdade.
 
 | Item | Situação atual | Sugestão |
 | :--- | :--- | :--- |
-| **Senha do banco e `SECRET_KEY` no código**[cite: 22] | Estão escritas diretamente no `settings.py`.[cite: 22] Se o arquivo foi para o GitHub, qualquer pessoa com acesso ao repositório as vê.[cite: 22] | Mover para variáveis de ambiente ou um arquivo `.env` fora do Git.[cite: 22] Se já foram publicadas, trocar a senha do MySQL e gerar uma nova `SECRET_KEY`.[cite: 22] |
-| **Tipo de conta só pelo e-mail**[cite: 22] | Qualquer pessoa pode se cadastrar com um e-mail terminado em `.gov` e virar administrador, pois o e-mail não é verificado.[cite: 22] | Confirmar o e-mail (link de verificação) antes de conceder adm/funcionário, ou conceder esses tipos manualmente.[cite: 22] |
-| **API sem autenticação**[cite: 22] | Não há bloco `REST_FRAMEWORK` no settings, então valem os padrões do DRF: sem exigir login.[cite: 22] O Swagger também é público.[cite: 22] | Definir autenticação e permissões (por exemplo, só adm cria livros e categorias).[cite: 22] |
-| **CORS liberado para todos**[cite: 22] | `CORS_ALLOW_ALL_ORIGINS = True` permite que qualquer site chame a API.[cite: 22] | Em produção, usar `CORS_ALLOWED_ORIGINS` com a lista dos endereços do front.[cite: 22] |
-| **`DEBUG` e `ALLOWED_HOSTS`**[cite: 22] | `DEBUG = True` (aparece duas vezes no arquivo) e `ALLOWED_HOSTS` vazio.[cite: 22] | Em produção: `DEBUG = False` e `ALLOWED_HOSTS` com os domínios.[cite: 22] Remover a repetição.[cite: 22] |
-| **Posição do `CorsMiddleware`**[cite: 22] | Está por último na lista `MIDDLEWARE`.[cite: 22] | A documentação do `django-cors-headers` recomenda colocá-lo o mais acima possível, antes do `CommonMiddleware`.[cite: 22] |
-| **Caminho dos estáticos**[cite: 22] | `'bookstore\static\scripts'` usa barra invertida em string comum.[cite: 22] No Python 3.12+ o `\s` gera aviso de sequência inválida.[cite: 22] | Usar `BASE_DIR / 'bookstore' / 'static' / 'scripts'` (funciona em qualquer sistema).[cite: 22] |
-| **`Livro.categoria` com `DO_NOTHING`**[cite: 23] | Apagar uma categoria com livros causa erro de integridade no MySQL.[cite: 23] | Usar `PROTECT` (erro claro e controlado) ou decidir o que acontece com os livros.[cite: 23] |
-| **`UsuarioEmprestimosSerializer`**[cite: 23] | Herda de `ModelSerializer` mas não tem `Meta`.[cite: 23] O DRF costuma exigir `Meta` em um `ModelSerializer` e pode dar erro ao usá-lo.[cite: 23] | Se não estiver ligado a um model, herdar de `serializers.Serializer`.[cite: 23] Vale testar o endpoint que o usa.[cite: 23] |
-| **`Livro.situacao` em texto livre**[cite: 23] | Aceita qualquer texto, o que permite variações como `"Disponivel"` e `"disponível"`.[cite: 23] | Usar `TextChoices`, como já foi feito em `Usuario.TipoConta`.[cite: 23] |
-| **CPF sem validação**[cite: 23] | Aceita qualquer texto de até 11 caracteres e pode se repetir.[cite: 23] | Validar 11 dígitos (e o dígito verificador) e avaliar `unique=True`.[cite: 23] |
-| **Detalhes de acabamento**[cite: 23] | A rota `"aswaggerjson/"` parece ter uma letra `a` a mais; a descrição da API tem `"ssaida"`; o e-mail de contato é fictício; o import de `views` no `urls.py` parece não ser usado.[cite: 23] | Corrigir o texto e remover o que não é usado.[cite: 23] |
+| **Senha do banco e `SECRET_KEY` no código** | Estão escritas diretamente no `settings.py`. Se o arquivo foi para o GitHub, qualquer pessoa com acesso ao repositório as vê. | Mover para variáveis de ambiente ou um arquivo `.env` fora do Git. Se já foram publicadas, trocar a senha do MySQL e gerar uma nova `SECRET_KEY`. |
+| **Tipo de conta só pelo e-mail** | Qualquer pessoa pode se cadastrar com um e-mail terminado em `.gov` e virar administrador, pois o e-mail não é verificado. | Confirmar o e-mail (link de verificação) antes de conceder adm/funcionário, ou conceder esses tipos manualmente. |
+| **API sem autenticação** | Não há bloco `REST_FRAMEWORK` no settings, então valem os padrões do DRF: sem exigir login. O Swagger também é público. | Definir autenticação e permissões (por exemplo, só adm cria livros e categorias). |
+| **CORS liberado para todos** | `CORS_ALLOW_ALL_ORIGINS = True` permite que qualquer site chame a API. | Em produção, usar `CORS_ALLOWED_ORIGINS` com a lista dos endereços do front. |
+| **`DEBUG` e `ALLOWED_HOSTS`** | `DEBUG = True` (aparece duas vezes no arquivo) e `ALLOWED_HOSTS` vazio. | Em produção: `DEBUG = False` e `ALLOWED_HOSTS` com os domínios. Remover a repetição. |
+| **Posição do `CorsMiddleware`** | Está por último na lista `MIDDLEWARE`. | A documentação do `django-cors-headers` recomenda colocá-lo o mais acima possível, antes do `CommonMiddleware`. |
+| **Caminho dos estáticos** | `'bookstore\static\scripts'` usa barra invertida em string comum. No Python 3.12+ o `\s` gera aviso de sequência inválida. | Usar `BASE_DIR / 'bookstore' / 'static' / 'scripts'` (funciona em qualquer sistema). |
+| **`Livro.categoria` com `DO_NOTHING`** | Apagar uma categoria com livros causa erro de integridade no MySQL. | Usar `PROTECT` (erro claro e controlado) ou decidir o que acontece com os livros. |
+| **`UsuarioEmprestimosSerializer`** | Herda de `ModelSerializer` mas não tem `Meta`. O DRF costuma exigir `Meta` em um `ModelSerializer` e pode dar erro ao usá-lo. | Se não estiver ligado a um model, herdar de `serializers.Serializer`. Vale testar o endpoint que o usa. |
+| **`Livro.situacao` em texto livre** | Aceita qualquer texto, o que permite variações como `"Disponivel"` e `"disponível"`. | Usar `TextChoices`, como já foi feito em `Usuario.TipoConta`. |
+| **CPF sem validação** | Aceita qualquer texto de até 11 caracteres e pode se repetir. | Validar 11 dígitos (e o dígito verificador) e avaliar `unique=True`. |
+| **Detalhes de acabamento** | A rota `"aswaggerjson/"` parece ter uma letra `a` a mais; a descrição da API tem `"ssaida"`; o e-mail de contato é fictício; o import de `views` no `urls.py` parece não ser usado. | Corrigir o texto e remover o que não é usado. |
 
 ### Exemplo de leitura de variáveis de ambiente
 
-Exemplo de como ler configurações sensíveis de variáveis de ambiente (apenas o trecho a adicionar ao `settings.py`):[cite: 24]
+Exemplo de como ler configurações sensíveis de variáveis de ambiente (apenas o trecho a adicionar ao `settings.py`):
 
 ```python
 import os
@@ -632,6 +632,6 @@ import os
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # em DATABASES: 'PASSWORD': os.environ["DB_PASSWORD"],
 ```
-*(Trecho de configuração via variáveis de ambiente no `settings.py`[cite: 24].)*
+*(Trecho de configuração via variáveis de ambiente no `settings.py`.)*
 
-> **Dica:** Em desenvolvimento local, você pode definir a variável no PowerShell antes de rodar o servidor: `$env:DB_PASSWORD = "sua-senha"`.[cite: 24] Ela vale só para aquela janela do terminal.[cite: 24]
+> **Dica:** Em desenvolvimento local, você pode definir a variável no PowerShell antes de rodar o servidor: `$env:DB_PASSWORD = "sua-senha"`. Ela vale só para aquela janela do terminal.
