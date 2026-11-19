@@ -527,42 +527,42 @@ Cada chave é um tipo de conta e cada valor é uma lista de sufixos.[cite: 18] O
 
 ## 5. URLs (rotas da aplicação)
 
-O arquivo de URLs diz ao Django qual código responde a cada endereço.[cite: 19] Ele tem quatro partes:[cite: 19]
+O arquivo de URLs diz ao Django qual código responde a cada endereço. Ele tem quatro partes:
 
 ### 5.1. Documentação da API (`schema_view`)
 
-A função `get_schema_view`, do `drf-yasg`, descreve a API (título `"Bookstore API"`, versão `v1`, licença e contato) e gera os documentos Swagger e Redoc.[cite: 19] Com `public=True` e `AllowAny`, qualquer pessoa pode abrir a documentação.[cite: 19]
+A função `get_schema_view`, do `drf-yasg`, descreve a API (título `"Bookstore API"`, versão `v1`, licença e contato) e gera os documentos Swagger e Redoc. Com `public=True` e `AllowAny`, qualquer pessoa pode abrir a documentação.
 
 ### 5.2. O roteador (`DefaultRouter`)
 
-Em vez de escrever uma rota por operação, o projeto registra cada ViewSet no roteador e ele cria as rotas sozinho:[cite: 19]
+Em vez de escrever uma rota por operação, o projeto registra cada ViewSet no roteador e ele cria as rotas sozinho:
 
 ```python
 route = routers.DefaultRouter()
 route.register(r'Livros', viewsets.LivroViewSet, basename='Livros')
 ```
-*(Registro de ViewSet no roteador do Django REST Framework[cite: 19].)*
+*(Registro de ViewSet no roteador do Django REST Framework.)*
 
-Para cada registro, o roteador cria uma rota de coleção e uma de item.[cite: 19] Supondo que os ViewSets sejam `ModelViewSet` (completos), o resultado é:[cite: 19]
+Para cada registro, o roteador cria uma rota de coleção e uma de item. Supondo que os ViewSets sejam `ModelViewSet` (completos), o resultado é:
 
 | Endereço | Método | Ação |
 | :--- | :--- | :--- |
-| `/Livros/`[cite: 19] | `GET`[cite: 19] | Lista todos os livros.[cite: 19] |
-| `/Livros/`[cite: 19] | `POST`[cite: 19] | Cadastra um livro.[cite: 19] |
-| `/Livros/<id>/`[cite: 19] | `GET`[cite: 19] | Mostra um livro.[cite: 19] |
-| `/Livros/<id>/`[cite: 19] | `PUT`/`PATCH`[cite: 19] | Altera um livro (completo / parcial).[cite: 19] |
-| `/Livros/<id>/`[cite: 19] | `DELETE`[cite: 19] | Apaga um livro.[cite: 19] |
+| `/Livros/` | `GET` | Lista todos os livros. |
+| `/Livros/` | `POST` | Cadastra um livro. |
+| `/Livros/<id>/` | `GET` | Mostra um livro. |
+| `/Livros/<id>/` | `PUT`/`PATCH` | Altera um livro (completo / parcial). |
+| `/Livros/<id>/` | `DELETE` | Apaga um livro. |
 
-O mesmo vale para os outros três registros:[cite: 19]
+O mesmo vale para os outros três registros:
 
 | Prefixo | ViewSet | Dados |
 | :--- | :--- | :--- |
-| `/Usuarios/`[cite: 19] | `UsuarioViewSet`[cite: 19] | Usuários e contas.[cite: 19] |
-| `/Livros/`[cite: 19] | `LivroViewSet`[cite: 19] | Livros.[cite: 19] |
-| `/Emprestimos/`[cite: 19] | `EmprestimoViewSet`[cite: 19] | Empréstimos.[cite: 19] |
-| `/Categorias/`[cite: 19] | `CategoriaViewSet`[cite: 19] | Categorias.[cite: 19] |
+| `/Usuarios/` | `UsuarioViewSet` | Usuários e contas. |
+| `/Livros/` | `LivroViewSet` | Livros. |
+| `/Emprestimos/` | `EmprestimoViewSet` | Empréstimos. |
+| `/Categorias/` | `CategoriaViewSet` | Categorias. |
 
-O `DefaultRouter` também cria a página inicial da API em `/`, com a lista dos endereços registrados.[cite: 19]
+O `DefaultRouter` também cria a página inicial da API em `/`, com a lista dos endereços registrados.
 
 ### 5.3. Rotas fixas
 
