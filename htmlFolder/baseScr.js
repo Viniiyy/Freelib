@@ -32,6 +32,10 @@ const NAVBAR_HTML_USER = `
             <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
         </button>
 
+        <a class="navbar-brand p-0 ms-2" href="homeS.html" aria-label="Página principal">
+            <img src="../logo/logo.png" alt="Freelib" style="height: 48px; width: auto;">
+        </a>
+
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1"
              id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
             <div class="offcanvas-header" style="background-color: #223146;">
@@ -51,7 +55,7 @@ const NAVBAR_HTML_USER = `
             </div>
         </div>
 
-        <form id="form-busca" class="d-flex w-75" role="search">
+        <form id="form-busca" class="d-flex flex-grow-1 ms-2" role="search">
             <input type="search" id="campo-busca" class="form-control me-2"
                    style="border-color: #223146;" placeholder="Pesquisar" aria-label="search">
             <button class="btn" style="border-color: #223146;" type="submit">Pesquisar</button>
@@ -70,6 +74,10 @@ const NAVBAR_HTML_FUNC = `
                 aria-controls="offcanvasWithBothOptions">
             <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
         </button>
+
+        <a class="navbar-brand p-0 ms-2" href="homeS.html" aria-label="Página principal">
+            <img src="../logo/logo.png" alt="Freelib" style="height: 48px; width: auto;">
+        </a>
 
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1"
              id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
@@ -92,7 +100,7 @@ const NAVBAR_HTML_FUNC = `
             </div>
         </div>
 
-        <form id="form-busca" class="d-flex w-75" role="search">
+        <form id="form-busca" class="d-flex flex-grow-1 ms-2" role="search">
             <input type="search" id="campo-busca" class="form-control me-2"
                    style="border-color: #223146;" placeholder="Pesquisar" aria-label="search">
             <button class="btn" style="border-color: #223146;" type="submit">Pesquisar</button>
@@ -111,6 +119,10 @@ const NAVBAR_HTML_ADM = `
                 aria-controls="offcanvasWithBothOptions">
             <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
         </button>
+
+        <a class="navbar-brand p-0 ms-2" href="homeS.html" aria-label="Página principal">
+            <img src="../logo/logo.png" alt="Freelib" style="height: 48px; width: auto;">
+        </a>
 
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1"
              id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
@@ -135,7 +147,7 @@ const NAVBAR_HTML_ADM = `
             </div>
         </div>
 
-        <form id="form-busca" class="d-flex w-75" role="search">
+        <form id="form-busca" class="d-flex flex-grow-1 ms-2" role="search">
             <input type="search" id="campo-busca" class="form-control me-2"
                    style="border-color: #223146;" placeholder="Pesquisar" aria-label="search">
             <button class="btn" style="border-color: #223146;" type="submit">Pesquisar</button>
