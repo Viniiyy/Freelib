@@ -171,7 +171,13 @@ python -m pip --version
 Instale as bibliotecas principais:
 
 ```powershell
-python -m pip install Django djangorestframework drf-yasg mysqlclient Pillow
+python -m pip install Django
+python -m pip install djangorestframework
+python -m pip install drf-yasg
+python -m pip install mysqlclient
+python -m pip install pillow
+python -m pip install django-cors-headers
+
 ```
 
 > **Atenção:** o segundo comando instala as bibliotecas, mas não garante as mesmas versões usadas originalmente. Faça verificações de funcionamento antes de colocar o projeto online.
